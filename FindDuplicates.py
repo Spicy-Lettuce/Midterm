@@ -28,9 +28,12 @@ print(len(data), "items")
 size = len(data)
 quickSort(data, 0, size - 1)
 
+data.reverse() # UPDATE: make order descending 
+
 duplicates = {}
 
-for i in range(0, len(data)):
+# UPDATE: stop at len(data) - 1 so data is in bound and stops crashing
+for i in range(0, len(data) - 1):
     if data[i] == data[i+1]:
         if i not in duplicates:
             duplicates[i] = 1

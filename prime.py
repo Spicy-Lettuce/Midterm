@@ -6,14 +6,18 @@ def current_milli_time():
 
 
 def is_prime(x):
-    prime = True
-    if x == 1:
+    # --------------- UPDATE: Faster prime test ------------------
+    if x < 2:
         return False
-    else:
-        for i in range(2, x-1):
-            if (x % i) == 0:
-                prime = False
-    return prime
+    if x == 2:
+        return True
+    if x % 2 == 0:
+        return False
+    limit = int(x ** 0.5) + 1
+    for i in range(3, limit, 2):
+        if x % i == 0:
+            return False
+    return True
 
 
 rs = 1000

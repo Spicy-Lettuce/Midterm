@@ -4,6 +4,7 @@ from random import randint
 
 
 class ButtonWrapper:
+
     def __init__(self, id="", row=-1, col=-1, c=""):
         self.ID = id
         self.ROW = row
@@ -13,6 +14,8 @@ class ButtonWrapper:
 
 
 """ Check if two buttons have been clicked and if they are a match"""
+
+
 def check_match():
     global buttons
     clicked = []
@@ -22,18 +25,29 @@ def check_match():
     if len(clicked) >= 2:
         if clicked[0].BUTTON_OBJ['bg'] == clicked[1].BUTTON_OBJ['bg']:
             # It's a match
-            clicked[0].BUTTON_OBJ.configure(fg='black', bg='black', relief='raised')
-            clicked[1].BUTTON_OBJ.configure(fg='black', bg='black', relief='raised')
+            clicked[0].BUTTON_OBJ.configure(fg='black',
+                                            bg='black',
+                                            relief='raised')
+            clicked[1].BUTTON_OBJ.configure(fg='black',
+                                            bg='black',
+                                            relief='raised')
             # black
         else:
-            clicked[0].BUTTON_OBJ.configure(fg='SystemButtonFace', bg='SystemButtonFace', relief='raised')
-            clicked[1].BUTTON_OBJ.configure(fg='SystemButtonFace', bg='SystemButtonFace', relief='raised')
+            clicked[0].BUTTON_OBJ.configure(fg='SystemButtonFace',
+                                            bg='SystemButtonFace',
+                                            relief='raised')
+            clicked[1].BUTTON_OBJ.configure(fg='SystemButtonFace',
+                                            bg='SystemButtonFace',
+                                            relief='raised')
 
 
 """ If a button is pushed, draw the correct colors"""
+
+
 def button_pushed(pushed_id):
     global buttons
-    buttons[pushed_id].BUTTON_OBJ.configure(bg=buttons[pushed_id].COLOR, relief="sunken")
+    buttons[pushed_id].BUTTON_OBJ.configure(bg=buttons[pushed_id].COLOR,
+                                            relief="sunken")
     # Because time.sleep blocks execution, the color change for the second button clicked does not take effect until
     # the function returns. So we need to use the 'after()' method
     # Parameters:
@@ -45,9 +59,12 @@ def button_pushed(pushed_id):
 
 
 def close_options(top):
-   top.destroy()
+    top.destroy()
+
 
 """ Save the new Row and Col values to the global game variables"""
+
+
 def save_options(r, c):
     global rows, cols
     rows = r
@@ -56,6 +73,8 @@ def save_options(r, c):
 
 
 """ Draw and handle the options menu"""
+
+
 def options():
     # Create a Toplevel window
     top = Toplevel(root)
@@ -72,7 +91,10 @@ def options():
     col.pack()
 
     # Create a Button to print something in the Entry widget
-    save = Button(top, text="Save", command=lambda: save_options(int(row_val.get()), int(col_val.get())))
+    save = Button(
+        top,
+        text="Save",
+        command=lambda: save_options(int(row_val.get()), int(col_val.get())))
     # Create a Button Widget in the Toplevel Window
     close = Button(top, text="Close", command=lambda: close_options(top))
     save.pack(pady=5, side=TOP)
@@ -84,6 +106,8 @@ Resets the game. Will clear, reshuffle and redraw the board
 Parameters: buttons - the global list of buttons
 ***This function requires an even number of cells on the board.***
 """
+
+
 def reset_game():
     global buttons
     # Delete all buttons if any
@@ -96,14 +120,30 @@ def reset_game():
     for i in range(rows):
         for j in range(cols):
             id = (i * cols) + j  # Calculate the button id
-            b = ButtonWrapper(id=str(id), row=i, col=j)  # Create the button meta data object
+            b = ButtonWrapper(id=str(id), row=i,
+                              col=j)  # Create the button meta data object
             # Create the button widget
-            b.BUTTON_OBJ = Button(root, text="     ", command=lambda bid=b.ID: button_pushed(bid), height=3, width=7)
-            buttons[b.ID] = b  # Save the button meta data object in the dictionary
+            b.BUTTON_OBJ = Button(root,
+                                  text="     ",
+                                  command=lambda bid=b.ID: button_pushed(bid),
+                                  height=3,
+                                  width=7)
+            buttons[
+                b.ID] = b  # Save the button meta data object in the dictionary
 
     #  Randomly assign colors to buttons, making sure there are always matching pairs
     ids = list(range(rows * cols))  # Make a list of all button IDs
-    while len(ids) > 0:  # While there are still IDs in the list
+
+    # --------------------- UPDATE: handle odd number of tiles ---------------------------------
+    if len(ids) % 2 == 1:
+        single = ids[randint(0, len(ids) - 1)]
+        ids.remove(single)
+        buttons[str(single)].BUTTON_OBJ.configure(
+            state=DISABLED, text='*')  # (This helps with seeing the odd tile)
+    while len(
+            ids
+    ) > 1:  #----------------   UPDATE: only loop while at least two remain (pairing) --------------------------
+
         a = ids[randint(0, len(ids) - 1)]  # Pick a random button ID
         ids.remove(a)  # Remove it from the list
         b = ids[randint(0, len(ids) - 1)]  # Pick a second random button ID
@@ -114,12 +154,17 @@ def reset_game():
 
     # Set all buttons to default state
     for b in buttons.values():
-        b.BUTTON_OBJ.configure(fg='SystemButtonFace', bg='SystemButtonFace', relief='raised')
-        b.BUTTON_OBJ.configure(fg='SystemButtonFace', bg='SystemButtonFace', relief='raised')
+        b.BUTTON_OBJ.configure(fg='SystemButtonFace',
+                               bg='SystemButtonFace',
+                               relief='raised')
+        b.BUTTON_OBJ.configure(fg='SystemButtonFace',
+                               bg='SystemButtonFace',
+                               relief='raised')
 
     # Add all buttons to the screen
     for b in buttons.values():
         b.BUTTON_OBJ.grid(row=b.ROW, column=b.COL)
+
 
 """
 Main Method
@@ -140,7 +185,6 @@ file.add_command(label='New Game', command=reset_game)
 file.add_command(label='Options', command=options)
 file.add_separator()
 file.add_command(label='Exit', command=root.destroy)
-
 
 reset_game()
 
