@@ -52,6 +52,12 @@ def save_options(r, c):
     global rows, cols
     rows = r
     cols = c
+    
+    # Ensure we have an even number of tiles for matching pairs
+    # If the total is odd, add one more column
+    if (rows * cols) % 2 != 0:
+        cols = cols + 1
+    
     reset_game()
 
 
@@ -103,7 +109,7 @@ def reset_game():
 
     #  Randomly assign colors to buttons, making sure there are always matching pairs
     ids = list(range(rows * cols))  # Make a list of all button IDs
-    while len(ids) > 0:  # While there are still IDs in the list
+    while len(ids) > 0:  # While there are still IDs in the list 
         a = ids[randint(0, len(ids) - 1)]  # Pick a random button ID
         ids.remove(a)  # Remove it from the list
         b = ids[randint(0, len(ids) - 1)]  # Pick a second random button ID
